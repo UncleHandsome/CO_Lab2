@@ -24,7 +24,7 @@ wire [31:0] sign32, pc4, pcb;
 wire [4:0]  RDaddr;
 wire [3:0]  ALUCtrl;
 wire [2:0]  ALU_op;
-wire RegWrite, RegDst, Branch, ALUSrc, zero, cout, overflow;
+wire RegWrite, RegDst, Branch, ALUSrc, zero, cout, overflow, SinExt;
 
 //Greate componentes
 ProgramCounter PC(
@@ -70,7 +70,8 @@ Decoder Decoder(
 	    .ALU_op_o(ALU_op),   
 	    .ALUSrc_o(ALUSrc),   
 	    .RegDst_o(RegDst),
-		.Branch_o(Branch)
+		.Branch_o(Branch),
+        .SinExt_o(SinExt)
 	    );
 
 ALU_Ctrl AC(
@@ -81,6 +82,7 @@ ALU_Ctrl AC(
 	
 Sign_Extend SE(
         .data_i(instr[15:0]),
+        .select_i(SinExt),
         .data_o(se_o)
         );
 
