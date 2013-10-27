@@ -6,7 +6,7 @@
 //----------------------------------------------
 //Date:        2010/8/16
 //----------------------------------------------
-//Description: 
+//Description:
 //--------------------------------------------------------------------------------
 
 module Decoder(
@@ -15,9 +15,9 @@ module Decoder(
 	ALU_op_o,
 	ALUSrc_o,
 	RegDst_o,
-	Branch_o
+	Branch_o,
 	);
-     
+
 //I/O ports
 input  [6-1:0] instr_op_i;
 
@@ -26,7 +26,7 @@ output [3-1:0] ALU_op_o;
 output         ALUSrc_o;
 output         RegDst_o;
 output         Branch_o;
- 
+
 //Internal Signals
 reg    [3-1:0] ALU_op_o;
 reg            ALUSrc_o;
@@ -39,19 +39,12 @@ reg            Branch_o;
 //Main function
 always @ (*) begin
     case (instr_op_i)
-        6'b000000: {RegDst_o, ALUSrc_o, RegWrite_o, Branch_o, ALU_op_o} <= 7'b1010010;
-        6'b100011: {RegDst_o, ALUSrc_o, RegWrite_o, Branch_o, ALU_op_o} <= 7'b0110000;
-        6'b101011: {RegDst_o, ALUSrc_o, RegWrite_o, Branch_o, ALU_op_o} <= 7'b0100000;
-        6'b000100: {RegDst_o, ALUSrc_o, RegWrite_o, Branch_o, ALU_op_o} <= 7'b0001001;
-        default: {RegDst_o, ALUSrc_o, RegWrite_o, Branch_o, ALU_op_o} <= 7'bxxxxxxx;
+        6'b000000: {RegWrite_o, RegDst_o, ALUSrc_o, Branch_o, ALU_op_o} <= 7'b1100010; // RTYPE
+        6'b000100: {RegWrite_o, RegDst_o, ALUSrc_o, Branch_o, ALU_op_o} <= 7'b0001001; // BEQ
+        6'b001000: {RegWrite_o, RegDst_o, ALUSrc_o, Branch_o, ALU_op_o} <= 7'b1010000; // ADDI
+        6'b001101: {RegWrite_o, RegDst_o, ALUSrc_o, Branch_o, ALU_op_o} <= 7'b1010000; // ORI
+        default:   {RegWrite_o, RegDst_o, ALUSrc_o, Branch_o, ALU_op_o} <= 7'bxxxxxxx; // illegal op
     endcase
 end
 
 endmodule
-
-
-
-
-
-                    
-                    

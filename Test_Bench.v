@@ -50,7 +50,6 @@ parameter [6-1:0] FUNC_SLL = 6'b000000;
 parameter [6-1:0] FUNC_SRLV= 6'b000110;
 parameter [6-1:0] FUNC_SRL = 6'b000010;
 
-
 //Other register declaration
 reg [31:0] instruction;
 reg [31:0] register_file[31:0];
@@ -80,6 +79,8 @@ end
 initial  begin
 	$readmemb("CO_Lab2_test.txt", cpu.IM.Instr_Mem);  //Read instruction from "CO_P2_test_data1.txt" 
     handle = $fopen("CO_Lab2_Result.txt");
+    $dumpfile("test.vcd");
+    $dumpvars(0,cpu);
 	
 	CLK = 0;
     RST = 0;

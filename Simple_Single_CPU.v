@@ -19,7 +19,7 @@ input         rst_n;
 
 //Internal Signles
 
-wire [31:0] pc_in_i, pc_out_o, instr_o, se_o, RSdata, RTdata, MuxALUSrc, result;
+wire [31:0] pc_in, pc_out, instr, se_o, RSdata, RTdata, MuxALUSrc, result;
 wire [31:0] sign32, pc4, pcb;
 wire [4:0]  RDaddr;
 wire [3:0]  ALUCtrl;
@@ -30,24 +30,24 @@ wire RegWrite, RegDst, Branch, ALUSrc, zero, cout, overflow;
 ProgramCounter PC(
         .clk_i(clk_i),      
 	    .rst_n (rst_n),     
-	    .pc_in_i(pc_in_i) ,   
-	    .pc_out_o(pc_out_o) 
+	    .pc_in_i(pc_in),
+	    .pc_out_o(pc_out)
 	    );
 	
 Adder Adder1(
-        .src1_i(pc_in_i),     
-	    .src2_i(32'd4),     
+        .src1_i(pc_out),
+	    .src2_i(32'd4),
 	    .sum_o(pc4)    
 	    );
 	
 Instr_Memory IM(
-        .pc_addr_i(pc_out_o),  
-	    .instr_o(instr_o)    
+        .pc_addr_i(pc_out),
+	    .instr_o(instr)
 	    );
 
 MUX_2to1 #(.size(5)) Mux_Write_Reg(
-        .data0_i(instr_o[20:16]),
-        .data1_i(instr_o[15:11]),
+        .data0_i(instr[20:16]),
+        .data1_i(instr[15:11]),
         .select_i(RegDst),
         .data_o(RDaddr)
         );	
@@ -55,32 +55,32 @@ MUX_2to1 #(.size(5)) Mux_Write_Reg(
 Reg_File RF(
         .clk_i(clk_i),      
 	    .rst_n(rst_n) ,     
-        .RSaddr_i(instr_o[25:21]) ,  
-        .RTaddr_i(instr_o[20:16]) ,  
-        .RDaddr_i(RDaddr) ,  
-        .RDdata_i(result)  , 
+        .RSaddr_i(instr[25:21]),
+        .RTaddr_i(instr[20:16]),
+        .RDaddr_i(RDaddr),
+        .RDdata_i(result),
         .RegWrite_i (RegWrite),
-        .RSdata_o(RSdata) ,  
+        .RSdata_o(RSdata),
         .RTdata_o(RTdata)   
         );
 	
 Decoder Decoder(
-        .instr_op_i(instr_o[31:26]), 
-	    .RegWrite_o(RegWrite), 
+        .instr_op_i(instr[31:26]),
+	    .RegWrite_o(RegWrite),
 	    .ALU_op_o(ALU_op),   
 	    .ALUSrc_o(ALUSrc),   
-	    .RegDst_o(RegDst),   
-		.Branch_o(Branch)   
+	    .RegDst_o(RegDst),
+		.Branch_o(Branch)
 	    );
 
 ALU_Ctrl AC(
-        .funct_i(instr_o[5:0]),   
+        .funct_i(instr[5:0]),
         .ALUOp_i(ALU_op),   
         .ALUCtrl_o(ALUCtrl) 
         );
 	
 Sign_Extend SE(
-        .data_i(instr_o[15:0]),
+        .data_i(instr[15:0]),
         .data_o(se_o)
         );
 
@@ -115,8 +115,8 @@ Shift_Left_Two_32 Shifter(
 MUX_2to1 #(.size(32)) Mux_PC_Source(
         .data0_i(pc4),
         .data1_i(pcb),
-        .select_i(Branch),
-        .data_o(pc_in_i)
+        .select_i(Branch & zero),
+        .data_o(pc_in)
         );	
 
 endmodule
