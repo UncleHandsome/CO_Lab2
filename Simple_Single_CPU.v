@@ -97,6 +97,7 @@ alu ALU(
 		.rst_n(rst_n),
         .src1(RSdata),
 	    .src2(MuxALUSrc),
+        .shamt(instr[10:6]),
 	    .ALU_control(ALUCtrl),
 	    .result(result),
 		.zero(zero),

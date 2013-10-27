@@ -24,6 +24,7 @@ module alu(
            rst_n,         // negative reset            (input)
            src1,          // 32 bits source 1          (input)
            src2,          // 32 bits source 2          (input)
+           shamt,
            ALU_control,   // 4 bits ALU control input  (input)
 		   bonus_control, // 3 bits bonus control input(input) 
            result,        // 32 bits result            (output)
@@ -36,6 +37,7 @@ module alu(
 input           rst_n;
 input  [32-1:0] src1;
 input  [32-1:0] src2;
+input   [4:0]   shamt;
 input   [4-1:0] ALU_control;
 input   [3-1:0] bonus_control; 
 
@@ -131,11 +133,17 @@ assign sgt = ~(slt | seq);
 assign sge = ~slt;
 assign sle = slt | seq;
 
+wire [31:0] shift_result;
+wire [4:0]  shift_src;
+assign shift_src = ALU_control[1] ? src1[4:0] : shamt;
+Shifter shifter(src2, shift_src, ALU_control[0], shift_result);
+
+
 
  // assign result = ALU_control == 4'b0111 ? {31'b0, fuck_result[31]} : fuck_result;
 always @(*) begin
-    if(ALU_control == 4'b0111) begin
-        case(bonus_control)
+    casex(ALU_control)
+        4'b0111: case(bonus_control)
             3'b000 : result = {31'b0, slt};
             3'b001 : result = {31'b0, sgt};
             3'b010 : result = {31'b0, sle};
@@ -143,9 +151,9 @@ always @(*) begin
             3'b110 : result = {31'b0, seq};
             3'b100 : result = {31'b0, sne};
         endcase
-    end
-    else
-        result = fuck_result;
+        4'b10xx: result = shift_result;
+        default: result = fuck_result;
+    endcase
 end           
 
 assign zero = result == 0;

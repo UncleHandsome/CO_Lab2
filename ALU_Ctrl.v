@@ -39,6 +39,10 @@ always @ (*) begin
             6'b100100: ALUCtrl_o <= 4'b0000; // and
             6'b100101: ALUCtrl_o <= 4'b0001; // or
             6'b101010: ALUCtrl_o <= 4'b0111; // slt
+            6'b000000: ALUCtrl_o <= 4'b1000; // sll
+            6'b000100: ALUCtrl_o <= 4'b1010; // sllv
+            6'b000010: ALUCtrl_o <= 4'b1001; // srl
+            6'b000110: ALUCtrl_o <= 4'b1011; // srlv
             default:   ALUCtrl_o <= 4'bxxxx; // ???
         endcase
     endcase

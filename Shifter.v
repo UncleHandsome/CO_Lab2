@@ -9,11 +9,11 @@ module Shifter(
 
 wire    [31:0]  right16, right8, right4, right2, right1, right;
 
-assign right16 = shamt[4] ? {{16{0}}, src[31:16]} : src;
-assign right8 = shamt[3] ? {{8{0}}, src[31:8]} : right16;
-assign right4 = shamt[2] ? {{4{0}}, src[31:4]} : right8;
-assign right2 = shamt[1] ? {{2{0}}, src[31:2]} : right4;
-assign right1 = shamt[0] ? {{1{0}}, src[31:1]} : right2;
+assign right16 = shamt[4] ? {{16{1'b0}}, src[31:16]} : src;
+assign right8 = shamt[3] ? {{8{1'b0}}, src[31:8]} : right16;
+assign right4 = shamt[2] ? {{4{1'b0}}, src[31:4]} : right8;
+assign right2 = shamt[1] ? {{2{1'b0}}, src[31:2]} : right4;
+assign right1 = shamt[0] ? {{1{1'b0}}, src[31:1]} : right2;
 assign right = right1;
 
 
@@ -26,5 +26,5 @@ assign left2 = shamt[1] ? {src[29:0], 2'b0} : left4;
 assign left1 = shamt[0] ? {src[30:0], 1'b0} : left2;
 assign left = left1;
 
-assign shiftd = dir ? right : left;
+assign shifted = dir ? right : left;
 endmodule

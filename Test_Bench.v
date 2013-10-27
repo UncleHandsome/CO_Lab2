@@ -77,8 +77,8 @@ end
 end
 
 initial  begin
-	$readmemb("CO_Lab2_test.txt", cpu.IM.Instr_Mem);  //Read instruction from "CO_P2_test_data1.txt" 
-    handle = $fopen("CO_Lab2_Result.txt");
+	$readmemb("CO_Lab2_test_bonus_shift.txt", cpu.IM.Instr_Mem);  //Read instruction from "CO_P2_test_data1.txt" 
+    handle = $fopen("CO_Lab2_test_bonus_shift.txt");
     $dumpfile("test.vcd");
     $dumpvars(0,cpu);
 	
