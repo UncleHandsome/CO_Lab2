@@ -54,7 +54,7 @@ parameter [6-1:0] OP_LUI   = 6'b001111;
 parameter [6-1:0] OP_JAL   = 6'b000011;
 
 assign {RegWrite_o, RegDst_o, ALUSrc_o, Branch_o, MemWrite_o, MemToReg_o,
-        Jump_o, ALU_op_o, SinExt_o, BranchType_o} = control;
+        Jump_o, ALU_op_o, SinExt_o, BranchType_o} = countrol;
 
 //Main function
 always @ (*) begin

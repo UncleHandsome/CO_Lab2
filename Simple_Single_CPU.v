@@ -20,7 +20,7 @@ input         rst_n;
 //Internal Signles
 
 wire [31:0] pc_in, pc_out, instr, se_o, RSdata, RTdata, MuxALUSrc, result;
-wire [31:0] sign32, pc4, pcb, mem_data, write_data, RDdata_In;
+wire [31:0] sign32, pc4, pcb, mem_data, write_data, RDdata_In, Jump_Src;
 wire [4:0]  RDaddr;
 wire [3:0]  ALUCtrl;
 wire [2:0]  ALU_op;
@@ -56,7 +56,7 @@ MUX_4to1 #(.size(5)) Mux_Write_Reg(
         );	
 
 MUX_2to1 #(.size(32)) Mux_RDdata_In(
-        .data0_i(wirte_data),
+        .data0_i(write_data),
         .data1_i(pc4),
         .select_i(Jump & RegDst),
         .data_o(RDdata_In)
@@ -131,10 +131,10 @@ Shift_Left_Two_32 Shifter(
         ); 		
 		
 MUX_4to1 #(.size(1)) MUX_Condition(
-        .data0_i(zero),
-        .data1_i(zero ~| result[31]),
-        .data2_i(~result[31]),
-        .data3_i(~zero),
+        .data0_i(zero), // BEQ
+        .data1_i(zero ~| result[31]), // BGEZ
+        .data2_i(~result[31]), //BGT
+        .data3_i(~zero), // BNEZ
         .select_i(BranchType),
         .data_o(Mux_Cond)
         );
@@ -155,7 +155,7 @@ MUX_4to1 #(.size(32)) Mux_Branch_Source(
         .data_o(pc_in)
         );
 
-Data_Memory Data_Mem(
+Data_Memory DM(
         .clk_i(clk_i),
         .addr_i(result),
         .data_i(RTdata),
