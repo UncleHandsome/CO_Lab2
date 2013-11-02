@@ -20,7 +20,7 @@ input         rst_n;
 //Internal Signles
 
 wire [31:0] pc_in, pc_out, instr, se_o, RSdata, RTdata, MuxALUSrc, result;
-wire [31:0] sign32, pc4, pcb, mem_data, write_data, RDdata_In, Jump_Src;
+wire [31:0] sign32, pc4, pcb, mem_data, write_data, RDdata_In, Jump_Src, Branch_Src;
 wire [4:0]  RDaddr;
 wire [3:0]  ALUCtrl;
 wire [2:0]  ALU_op;
@@ -139,19 +139,24 @@ MUX_4to1 #(.size(1)) MUX_Condition(
         .data_o(Mux_Cond)
         );
 
-MUX_2to1 #(.size(32)) Mux_Jump_Src(
+MUX_2to1 #(.size(32)) Mux_Branch_Src(
         .data0_i(pc4),
-        .data1_i(RSdata),
-        .select_i(IndirectJump),
+        .data1_i(pcb),
+        .select_i(Branch & Mux_Cond),
+        .data_o(Branch_Src)
+        );
+
+MUX_2to1 #(.size(32)) Mux_Jump_Src(
+        .data0_i(Branch_Src),
+        .data1_i({pc4[31:28], instr[25:0], 2'b00}),
+        .select_i(Jump),
         .data_o(Jump_Src)
         );
 
-MUX_4to1 #(.size(32)) Mux_Branch_Source(
+MUX_2to1 #(.size(32)) Mux_Indirect_Jump_Source(
         .data0_i(Jump_Src),
-        .data1_i(pcb),
-        .data2_i({pc4[31:28], instr[25:0], 2'b00}),
-        .data3_i({pc4[31:28], instr[25:0], 2'b00}),
-        .select_i({Jump, Branch & Mux_Cond}),
+        .data1_i(RSdata),
+        .select_i(IndirectJump),
         .data_o(pc_in)
         );
 

@@ -1,4 +1,4 @@
 Simple Single Cycle MIPS CPU
 ============================
 
-The previos Workable version is "3348dfb39"
+For Lab2, please checkout to 3348dfb39
