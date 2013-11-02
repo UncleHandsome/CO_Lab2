@@ -24,6 +24,7 @@ wire [31:0] sign32, pc4, pcb, mem_data, write_data, RDdata_In;
 wire [4:0]  RDaddr;
 wire [3:0]  ALUCtrl;
 wire [2:0]  ALU_op;
+wire [1:0]  BranchType;
 wire RegWrite, RegDst, Branch, ALUSrc, zero, cout, overflow, SinExt, Jump;
 wire Mux_Cond, MemToReg, MemWrite, IndirectJump;
 
@@ -80,10 +81,11 @@ Decoder Decoder(
 	    .ALUSrc_o(ALUSrc),   
 	    .RegDst_o(RegDst),
 		.Branch_o(Branch),
-        .SinExt_o(SinExt)
+        .SinExt_o(SinExt),
         .MemToReg_o(MemToReg),
         .MemWrite_o(MemWrite),
-        .Jump(Jump)
+        .Jump_o(Jump),
+        .BranchType_o(BranchType)
 	    );
 
 ALU_Ctrl AC(
@@ -129,11 +131,11 @@ Shift_Left_Two_32 Shifter(
         ); 		
 		
 MUX_4to1 #(.size(1)) MUX_Condition(
-        .data0_i(),
-        .data1_i(),
-        .data2_i(),
-        .data3_i(),
-        .select_i(),
+        .data0_i(zero),
+        .data1_i(zero ~| result[31]),
+        .data2_i(~result[31]),
+        .data3_i(~zero),
+        .select_i(BranchType),
         .data_o(Mux_Cond)
         );
 

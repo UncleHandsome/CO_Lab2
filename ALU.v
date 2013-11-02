@@ -26,7 +26,6 @@ module alu(
            src2,          // 32 bits source 2          (input)
            shamt,
            ALU_control,   // 4 bits ALU control input  (input)
-		   bonus_control, // 3 bits bonus control input(input) 
            result,        // 32 bits result            (output)
            zero,          // 1 bit when the output is 0, zero must be set (output)
            cout,          // 1 bit carry out           (output)
@@ -78,17 +77,7 @@ always @(*) begin
         ALU_ADD: {cout, result} <= src1 + src2;
         ALU_MUL: result <= src1 * src2;
         ALU_SUB: {cout, result} <= src1 + ~src2 + 1;
-        ALU_BAN: begin
-            result = src1 + ~src2 + 1;
-            case(bonus_control)
-                3'b000: result = {31'b0, result[31]};
-                3'b001: result = {31'b0, ~result[31]};
-                3'b010: result = {31'b0, result[31] | zero};
-                3'b011: result = {31'b0, ~result[31] | zero};
-                3'b110: result = src1 == src2;
-                3'b100: result = src1 != src2;
-            endcase
-        end
+        ALU_BAN: result <= src1 + ~src2 + 1;
         ALU_SHF: result <= shift_result;
         ALU_XOR: result <= src1 ~| src2;
     endcase
