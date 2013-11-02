@@ -20,12 +20,12 @@ input         rst_n;
 //Internal Signles
 
 wire [31:0] pc_in, pc_out, instr, se_o, RSdata, RTdata, MuxALUSrc, result;
-wire [31:0] sign32, pc4, pcb, pc_source;
+wire [31:0] sign32, pc4, pcb, pc_source, mem_data, write_data;
 wire [4:0]  RDaddr;
 wire [3:0]  ALUCtrl;
 wire [2:0]  ALU_op;
 wire RegWrite, RegDst, Branch, ALUSrc, zero, cout, overflow, SinExt, Jump;
-wire Mux_PC;
+wire Mux_PC, MemToReg, MemWrite;
 
 //Greate componentes
 ProgramCounter PC(
@@ -59,7 +59,7 @@ Reg_File RF(
         .RSaddr_i(instr[25:21]),
         .RTaddr_i(instr[20:16]),
         .RDaddr_i(RDaddr),
-        .RDdata_i(result),
+        .RDdata_i(write_data),
         .RegWrite_i (RegWrite),
         .RSdata_o(RSdata),
         .RTdata_o(RTdata)   
@@ -73,6 +73,9 @@ Decoder Decoder(
 	    .RegDst_o(RegDst),
 		.Branch_o(Branch),
         .SinExt_o(SinExt)
+        .MemToReg_o(MemToReg),
+        .MemWrite_o(MemWrite),
+        .Jump(Jump)
 	    );
 
 ALU_Ctrl AC(
@@ -130,6 +133,21 @@ MUX_2to1 #(.size(32)) Mux_Jump_Source(
         .data_o(pc_in)
         );
 
+Data_Memory Data_Mem(
+        .clk_i(clk_i),
+        .addr_i(result),
+        .data_i(RTdata),
+        .MemRead_i(~MemWrite),
+        .MemWrite_i(MemWrite),
+        .data_o(mem_data)
+        );
+
+MUX_2to1 #(.size(32)) Mux_Mem_Source(
+        .data0_i(result),
+        .data1_i(mem_data),
+        .select_i(MemToReg),
+        .data_o(write_data)
+        );
 endmodule
 		  
 
