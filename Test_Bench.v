@@ -129,7 +129,7 @@ end
 end
 
 initial  begin
-	$readmemb("CO_LAB3_test_data2.txt", cpu.IM.Instr_Mem);  //Read instruction from "CO_P2_test_data1.txt"
+	$readmemb("CO_LAB3_test_data3.txt", cpu.IM.Instr_Mem);  //Read instruction from "CO_P2_test_data1.txt"
     handle = $fopen("CO_Lab3_Result.txt");
     $dumpfile("test.vcd");
     $dumpvars(0,cpu);
@@ -305,7 +305,7 @@ initial  begin
 		
 		// Check the register file
 		// It should be the same with the register file in the design
-		for(i=0; i<31; i=i+1)begin
+		for(i=0; i<32; i=i+1)begin
 			if(cpu.RF.Reg_File[i] !== register_file[i] || cpu.DM.memory[i] !== memory[i])begin
 				case(instruction[31:26])
 					OP_RTYPE:begin
@@ -386,7 +386,7 @@ initial  begin
 				    $display("Your wrong value is %d ",cpu.RF.Reg_File[i]);
                 end
                 if (cpu.DM.memory[i] !== memory[i]) begin
-				    $display("Memory %d contains wrong answer",i);
+				    $display("Memory %x contains wrong answer",i*4);
 				    $display("The correct value is %d ", memory[i]);
 				    $display("Your wrong value is %d ", cpu.DM.memory[i]);
                 end

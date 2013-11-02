@@ -66,7 +66,7 @@ always @ (*) begin
         OP_ADDI : countrol <= 13'b1010000_000_1_00;
         OP_JUMP : countrol <= 13'b0000001_000_1_00;
         OP_ORI  : countrol <= 13'b1010000_011_0_00;
-        OP_JAL  : countrol <= 13'b1000001_000_1_00;
+        OP_JAL  : countrol <= 13'b1101001_000_1_00;
         OP_BGT  : countrol <= 13'b0001000_001_1_01;
         OP_BNEZ : countrol <= 13'b0001000_001_1_11;
         OP_BGEZ : countrol <= 13'b0001000_001_1_10;

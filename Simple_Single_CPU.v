@@ -69,7 +69,7 @@ Reg_File RF(
         .RTaddr_i(instr[20:16]),
         .RDaddr_i(RDaddr),
         .RDdata_i(RDdata_In),
-        .RegWrite_i (RegWrite),
+        .RegWrite_i (RegWrite & ~IndirectJump),
         .RSdata_o(RSdata),
         .RTdata_o(RTdata)   
         );
