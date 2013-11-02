@@ -129,7 +129,7 @@ end
 end
 
 initial  begin
-	$readmemb("CO_LAB3_test_data1.txt", cpu.IM.Instr_Mem);  //Read instruction from "CO_P2_test_data1.txt" 
+	$readmemb("CO_LAB3_test_data2.txt", cpu.IM.Instr_Mem);  //Read instruction from "CO_P2_test_data1.txt"
     handle = $fopen("CO_Lab3_Result.txt");
     $dumpfile("test.vcd");
     $dumpvars(0,cpu);
@@ -379,6 +379,7 @@ initial  begin
 						$display("ERROR: JAL  instruction fail");
 					end
 				endcase
+                $display("Inst %b\n", instruction);
                 if(cpu.RF.Reg_File[i] !== register_file[i]) begin
 				    $display("Register %d contains wrong answer",i);
 				    $display("The correct value is %d ",register_file[i]);

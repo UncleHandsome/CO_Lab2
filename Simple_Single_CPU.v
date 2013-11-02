@@ -132,8 +132,8 @@ Shift_Left_Two_32 Shifter(
 		
 MUX_4to1 #(.size(1)) MUX_Condition(
         .data0_i(zero), // BEQ
-        .data1_i(zero ~| result[31]), // BGEZ
-        .data2_i(~result[31]), //BGT
+        .data1_i(result[31] ~| zero), //BGT
+        .data2_i(~result[31]), // BGEZ
         .data3_i(~zero), // BNEZ
         .select_i(BranchType),
         .data_o(Mux_Cond)
