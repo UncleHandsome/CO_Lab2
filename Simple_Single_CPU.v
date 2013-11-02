@@ -20,11 +20,12 @@ input         rst_n;
 //Internal Signles
 
 wire [31:0] pc_in, pc_out, instr, se_o, RSdata, RTdata, MuxALUSrc, result;
-wire [31:0] sign32, pc4, pcb;
+wire [31:0] sign32, pc4, pcb, pc_source;
 wire [4:0]  RDaddr;
 wire [3:0]  ALUCtrl;
 wire [2:0]  ALU_op;
-wire RegWrite, RegDst, Branch, ALUSrc, zero, cout, overflow, SinExt;
+wire RegWrite, RegDst, Branch, ALUSrc, zero, cout, overflow, SinExt, Jump;
+wire Mux_PC;
 
 //Greate componentes
 ProgramCounter PC(
@@ -118,9 +119,16 @@ Shift_Left_Two_32 Shifter(
 MUX_2to1 #(.size(32)) Mux_PC_Source(
         .data0_i(pc4),
         .data1_i(pcb),
-        .select_i(Branch & zero),
-        .data_o(pc_in)
+        .select_i(Mux_PC),
+        .data_o(pc_source)
         );	
+
+MUX_2to1 #(.size(32)) Mux_Jump_Source(
+        .data0_i(pc_source),
+        .data1_i({pc4[31:28], instr[25:0], 2'b00}),
+        .select_i(Jump),
+        .data_o(pc_in)
+        );
 
 endmodule
 		  

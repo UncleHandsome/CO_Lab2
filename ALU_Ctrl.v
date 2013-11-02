@@ -43,8 +43,7 @@ always @ (*) begin
     case (ALUOp_i)
         3'b000: ALUCtrl_o <= 4'b0010; // add (for addi)
         3'b001: ALUCtrl_o <= 4'b0110; // sub (for beq)
-        3'b010: ALUCtrl_o <= 4'b0001; // or (for ori)
-        default: case(funct_i) // R-type instruction  
+        3'b010: case(funct_i) // R-type instruction
             FUNC_ADD : ALUCtrl_o <= 4'b0010;
             FUNC_SUB : ALUCtrl_o <= 4'b0110;
             FUNC_ADD : ALUCtrl_o <= 4'b0000;
@@ -54,8 +53,10 @@ always @ (*) begin
             FUNC_SLLV: ALUCtrl_o <= 4'b1010;
             FUNC_SRL : ALUCtrl_o <= 4'b1001;
             FUNC_SRLV: ALUCtrl_o <= 4'b1011;
+            FUNC_MUL : ALUCtrl_o <= 4'b0011;
             default:   ALUCtrl_o <= 4'bxxxx;
         endcase
+        3'b011: ALUCtrl_o <= 4'b0001; // or (for ori)
     endcase
 end
 endmodule     
