@@ -36,8 +36,6 @@ output         MemWrite_o;
 output         Jump;
 
 reg [10:0]   countrol;
-assign {RegWrite_o, RegDst_o, ALUSrc_o, Branch_o, MemWrite_o, MemToReg_o,
-        Jump, ALU_op_o, SinExt_o} = control;
 
 //Parameter
 parameter [6-1:0] OP_RTYPE = 6'b000000;
@@ -53,6 +51,9 @@ parameter [6-1:0] OP_BGEZ  = 6'b000001;
 parameter [6-1:0] OP_LUI   = 6'b001111;
 parameter [6-1:0] OP_JAL   = 6'b000011;
 
+assign {RegWrite_o, RegDst_o, ALUSrc_o, Branch_o, MemWrite_o, MemToReg_o,
+        Jump, ALU_op_o, SinExt_o} = control;
+
 //Main function
 always @ (*) begin
     case (instr_op_i)
@@ -63,6 +64,7 @@ always @ (*) begin
         OP_ADDI : countrol <= 11'b1010000_000_1; // ADDI
         OP_JUMP : countrol <= 11'b0000001_000_1; // J
         OP_ORI  : countrol <= 11'b1010000_011_0; // ORI
+        OP_JAL  : countrol <= 11'b1000001_000_1;
         default : countrol <= 11'bxxxxxxx_xxx_x; // illegal op
     endcase
 end

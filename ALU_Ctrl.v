@@ -12,7 +12,8 @@
 module ALU_Ctrl(
           funct_i,
           ALUOp_i,
-          ALUCtrl_o
+          ALUCtrl_o,
+          IndirectJump_o
           );
           
 //I/O ports 
@@ -20,6 +21,7 @@ input      [6-1:0] funct_i;
 input      [3-1:0] ALUOp_i;
 
 output     [4-1:0] ALUCtrl_o;    
+output     IndirectJump_o;
      
 //Internal Signals
 reg        [4-1:0] ALUCtrl_o;
@@ -46,7 +48,7 @@ always @ (*) begin
         3'b010: case(funct_i) // R-type instruction
             FUNC_ADD : ALUCtrl_o <= 4'b0010;
             FUNC_SUB : ALUCtrl_o <= 4'b0110;
-            FUNC_ADD : ALUCtrl_o <= 4'b0000;
+            FUNC_AND : ALUCtrl_o <= 4'b0000;
             FUNC_OR  : ALUCtrl_o <= 4'b0001;
             FUNC_SLT : ALUCtrl_o <= 4'b0111;
             FUNC_SLL : ALUCtrl_o <= 4'b1000;
@@ -54,11 +56,15 @@ always @ (*) begin
             FUNC_SRL : ALUCtrl_o <= 4'b1001;
             FUNC_SRLV: ALUCtrl_o <= 4'b1011;
             FUNC_MUL : ALUCtrl_o <= 4'b0011;
+            FUNC_JR  : ALUCtrl_o <= 4'b0010; // Add 0
             default:   ALUCtrl_o <= 4'bxxxx;
         endcase
         3'b011: ALUCtrl_o <= 4'b0001; // or (for ori)
     endcase
 end
+
+assign IndirectJump_o = (ALUOp_i == 3'b010) & (funct_i == FUNC_JR);
+
 endmodule     
 
 

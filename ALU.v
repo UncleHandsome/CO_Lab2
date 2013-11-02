@@ -51,6 +51,21 @@ wire             zero;
 reg              cout;
 wire             overflow;
 
+// ALU Operation parameter
+parameter [3:0] ALU_AND = 4'b0000;
+parameter [3:0] ALU_OR  = 4'b0001;
+parameter [3:0] ALU_ADD = 4'b0010;
+parameter [3:0] ALU_MUL = 4'b0011;
+// parameter [3:0] = 4'b0100;
+// parameter [3:0] = 4'b0101;
+parameter [3:0] ALU_SUB = 4'b0110;
+parameter [3:0] ALU_BAN = 4'b0111;
+parameter [3:0] ALU_SHF = 4'b10xx;
+parameter [3:0] ALU_XOR = 4'b1100;
+// parameter [3:0] = 4'b1101;
+// parameter [3:0] = 4'b1110;
+// parameter [3:0] = 4'b1111;
+
 wire [31:0] shift_result;
 wire [4:0]  shift_src;
 assign shift_src = ALU_control[1] ? src1[4:0] : shamt;
@@ -58,14 +73,12 @@ Shifter shifter(src2, shift_src, ALU_control[0], shift_result);
 
 always @(*) begin
     casex(ALU_control)
-        4'b0000: result <= src1 & src1;
-        4'b0001: result <= src2 | src2;
-        4'b0010: {cout, result} <= src1 + src2;
-        4'b0011: result <= src1 * src2;
-        // 4'b0100:
-        // 4'b0101;
-        4'b0110: {cout, result} <= src1 + ~src2 + 1;
-        4'b0111: begin
+        ALU_AND: result <= src1 & src1;
+        ALU_OR : result <= src2 | src2;
+        ALU_ADD: {cout, result} <= src1 + src2;
+        ALU_MUL: result <= src1 * src2;
+        ALU_SUB: {cout, result} <= src1 + ~src2 + 1;
+        ALU_BAN: begin
             result = src1 + ~src2 + 1;
             case(bonus_control)
                 3'b000: result = {31'b0, result[31]};
@@ -76,8 +89,8 @@ always @(*) begin
                 3'b100: result = src1 != src2;
             endcase
         end
-        4'b10xx: result <= shift_result;
-        4'b1100: result <= src1 ~| src2;
+        ALU_SHF: result <= shift_result;
+        ALU_XOR: result <= src1 ~| src2;
     endcase
 end           
 

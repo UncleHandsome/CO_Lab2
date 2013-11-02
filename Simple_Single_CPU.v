@@ -20,12 +20,12 @@ input         rst_n;
 //Internal Signles
 
 wire [31:0] pc_in, pc_out, instr, se_o, RSdata, RTdata, MuxALUSrc, result;
-wire [31:0] sign32, pc4, pcb, pc_source, mem_data, write_data;
+wire [31:0] sign32, pc4, pcb, mem_data, write_data, RDdata_In;
 wire [4:0]  RDaddr;
 wire [3:0]  ALUCtrl;
 wire [2:0]  ALU_op;
 wire RegWrite, RegDst, Branch, ALUSrc, zero, cout, overflow, SinExt, Jump;
-wire Mux_PC, MemToReg, MemWrite;
+wire Mux_Cond, MemToReg, MemWrite, IndirectJump;
 
 //Greate componentes
 ProgramCounter PC(
@@ -46,12 +46,20 @@ Instr_Memory IM(
 	    .instr_o(instr)
 	    );
 
-MUX_2to1 #(.size(5)) Mux_Write_Reg(
+MUX_4to1 #(.size(5)) Mux_Write_Reg(
         .data0_i(instr[20:16]),
         .data1_i(instr[15:11]),
-        .select_i(RegDst),
+        .data3_i(5'd31),
+        .select_i({Jump, RegDst}),
         .data_o(RDaddr)
         );	
+
+MUX_2to1 #(.size(32)) Mux_RDdata_In(
+        .data0_i(wirte_data),
+        .data1_i(pc4),
+        .select_i(Jump & RegDst),
+        .data_o(RDdata_In)
+        );
 		
 Reg_File RF(
         .clk_i(clk_i),      
@@ -59,7 +67,7 @@ Reg_File RF(
         .RSaddr_i(instr[25:21]),
         .RTaddr_i(instr[20:16]),
         .RDaddr_i(RDaddr),
-        .RDdata_i(write_data),
+        .RDdata_i(RDdata_In),
         .RegWrite_i (RegWrite),
         .RSdata_o(RSdata),
         .RTdata_o(RTdata)   
@@ -81,7 +89,8 @@ Decoder Decoder(
 ALU_Ctrl AC(
         .funct_i(instr[5:0]),
         .ALUOp_i(ALU_op),   
-        .ALUCtrl_o(ALUCtrl) 
+        .ALUCtrl_o(ALUCtrl),
+        .IndirectJump_o(IndirectJump)
         );
 	
 Sign_Extend SE(
@@ -119,17 +128,28 @@ Shift_Left_Two_32 Shifter(
         .data_o(sign32)
         ); 		
 		
-MUX_2to1 #(.size(32)) Mux_PC_Source(
-        .data0_i(pc4),
-        .data1_i(pcb),
-        .select_i(Mux_PC),
-        .data_o(pc_source)
-        );	
+MUX_4to1 #(.size(1)) MUX_Condition(
+        .data0_i(),
+        .data1_i(),
+        .data2_i(),
+        .data3_i(),
+        .select_i(),
+        .data_o(Mux_Cond)
+        );
 
-MUX_2to1 #(.size(32)) Mux_Jump_Source(
-        .data0_i(pc_source),
-        .data1_i({pc4[31:28], instr[25:0], 2'b00}),
-        .select_i(Jump),
+MUX_2to1 #(.size(32)) Mux_Jump_Src(
+        .data0_i(pc4),
+        .data1_i(RSdata),
+        .select_i(IndirectJump),
+        .data_o(Jump_Src)
+        );
+
+MUX_4to1 #(.size(32)) Mux_Branch_Source(
+        .data0_i(Jump_Src),
+        .data1_i(pcb),
+        .data2_i({pc4[31:28], instr[25:0], 2'b00}),
+        .data3_i({pc4[31:28], instr[25:0], 2'b00}),
+        .select_i({Jump, Branch & Mux_Cond}),
         .data_o(pc_in)
         );
 
