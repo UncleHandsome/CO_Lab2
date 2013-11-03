@@ -51,35 +51,32 @@ reg              cout;
 wire             overflow;
 
 // ALU Operation parameter
-parameter [3:0] ALU_AND = 4'b0000;
-parameter [3:0] ALU_OR  = 4'b0001;
-parameter [3:0] ALU_ADD = 4'b0010;
-parameter [3:0] ALU_MUL = 4'b0011;
-// parameter [3:0] = 4'b0100;
-// parameter [3:0] = 4'b0101;
-parameter [3:0] ALU_SUB = 4'b0110;
-parameter [3:0] ALU_BAN = 4'b0111;
-parameter [3:0] ALU_SHF = 4'b10xx;
-parameter [3:0] ALU_XOR = 4'b1100;
-// parameter [3:0] = 4'b1101;
-// parameter [3:0] = 4'b1110;
-// parameter [3:0] = 4'b1111;
-
-wire [31:0] shift_result;
-wire [4:0]  shift_src;
-assign shift_src = ALU_control[1] ? src1[4:0] : shamt;
-Shifter shifter(src2, shift_src, ALU_control[0], shift_result);
+// unused: 0100, 0101, 1101, 1110, 1111
+parameter [3:0] ALU_AND  = 4'b0000;
+parameter [3:0] ALU_OR   = 4'b0001;
+parameter [3:0] ALU_ADD  = 4'b0010;
+parameter [3:0] ALU_MUL  = 4'b0011;
+parameter [3:0] ALU_SUB  = 4'b0110;
+parameter [3:0] ALU_BAN  = 4'b0111;
+parameter [3:0] ALU_SLL  = 4'b1000;
+parameter [3:0] ALU_SLLV = 4'b1010;
+parameter [3:0] ALU_SRL  = 4'b1001;
+parameter [3:0] ALU_SRLV = 4'b1011;
+parameter [3:0] ALU_XOR  = 4'b1100;
 
 always @(*) begin
     casex(ALU_control)
-        ALU_AND: result <= src1 & src1;
-        ALU_OR : result <= src2 | src2;
-        ALU_ADD: {cout, result} <= src1 + src2;
-        ALU_MUL: result <= src1 * src2;
-        ALU_SUB: {cout, result} <= src1 + ~src2 + 1;
-        ALU_BAN: result <= src1 + ~src2 + 1;
-        ALU_SHF: result <= shift_result;
-        ALU_XOR: result <= src1 ~| src2;
+        ALU_AND : result <= src1 & src1;
+        ALU_OR  : result <= src2 | src2;
+        ALU_ADD : {cout, result} <= src1 + src2;
+        ALU_MUL : result <= src1 * src2;
+        ALU_SUB : {cout, result} <= src1 + ~src2 + 1;
+        ALU_BAN : result <= src1 + ~src2 + 1;
+        ALU_SLL : result <= src2 << shamt;
+        ALU_SLLV: result <= src2 << src1[4:0];
+        ALU_SRL : result <= src2 >> shamt;
+        ALU_SRLV: result <= src2 >> src1[4:0];
+        ALU_XOR : result <= src1 ~| src2;
     endcase
 end           
 

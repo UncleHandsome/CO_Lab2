@@ -39,6 +39,19 @@ parameter [6-1:0] FUNC_SRL = 6'b000010;
 parameter [6-1:0] FUNC_MUL = 6'b011000;
 parameter [6-1:0] FUNC_JR  = 6'b001000;
 
+// ALU Operation parameter
+// unused: 0100, 0101, 1101, 1110, 1111
+parameter [3:0] ALU_AND  = 4'b0000;
+parameter [3:0] ALU_OR   = 4'b0001;
+parameter [3:0] ALU_ADD  = 4'b0010;
+parameter [3:0] ALU_MUL  = 4'b0011;
+parameter [3:0] ALU_SUB  = 4'b0110;
+parameter [3:0] ALU_BAN  = 4'b0111;
+parameter [3:0] ALU_SLL  = 4'b1000;
+parameter [3:0] ALU_SLLV = 4'b1010;
+parameter [3:0] ALU_SRL  = 4'b1001;
+parameter [3:0] ALU_SRLV = 4'b1011;
+parameter [3:0] ALU_XOR  = 4'b1100;
        
 //Select exact operation
 always @ (*) begin
@@ -46,17 +59,17 @@ always @ (*) begin
         3'b000: ALUCtrl_o <= 4'b0010; // add (for addi)
         3'b001: ALUCtrl_o <= 4'b0110; // sub (for beq)
         3'b010: case(funct_i) // R-type instruction
-            FUNC_ADD : ALUCtrl_o <= 4'b0010;
-            FUNC_SUB : ALUCtrl_o <= 4'b0110;
-            FUNC_AND : ALUCtrl_o <= 4'b0000;
-            FUNC_OR  : ALUCtrl_o <= 4'b0001;
-            FUNC_SLT : ALUCtrl_o <= 4'b0111;
-            FUNC_SLL : ALUCtrl_o <= 4'b1000;
-            FUNC_SLLV: ALUCtrl_o <= 4'b1010;
-            FUNC_SRL : ALUCtrl_o <= 4'b1001;
-            FUNC_SRLV: ALUCtrl_o <= 4'b1011;
-            FUNC_MUL : ALUCtrl_o <= 4'b0011;
-            FUNC_JR  : ALUCtrl_o <= 4'b0010; // Add 0
+            FUNC_ADD : ALUCtrl_o <= ALU_ADD;
+            FUNC_SUB : ALUCtrl_o <= ALU_SUB;
+            FUNC_AND : ALUCtrl_o <= ALU_AND;
+            FUNC_OR  : ALUCtrl_o <= ALU_OR;
+            FUNC_SLT : ALUCtrl_o <= ALU_SUB;
+            FUNC_SLL : ALUCtrl_o <= ALU_SLL;
+            FUNC_SLLV: ALUCtrl_o <= ALU_SLLV;
+            FUNC_SRL : ALUCtrl_o <= ALU_SRL;
+            FUNC_SRLV: ALUCtrl_o <= ALU_SRLV;
+            FUNC_MUL : ALUCtrl_o <= ALU_MUL;
+            FUNC_JR  : ALUCtrl_o <= ALU_ADD; // Add 0
             default:   ALUCtrl_o <= 4'bxxxx;
         endcase
         3'b011: ALUCtrl_o <= 4'b0001; // or (for ori)
