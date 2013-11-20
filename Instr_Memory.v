@@ -23,7 +23,7 @@ reg    [32-1:0]	 instr_o;
 integer          i;
 
 //32 words Memory
-reg    [32-1:0]  Instr_Mem [0:32-1];
+reg    [32-1:0]  Instr_Mem [0:127-1];
 
 //Parameter
     
@@ -34,7 +34,7 @@ end
     
 //Initial Memory Contents
 initial begin
-    for ( i=0; i<32; i=i+1 )
+    for ( i=0; i<127; i=i+1 )
 	    Instr_Mem[i] = 32'b0;
 		
 end

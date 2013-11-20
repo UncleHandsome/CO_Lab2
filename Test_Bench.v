@@ -10,7 +10,7 @@
 //--------------------------------------------------------------------------------
 `timescale 1ns/1ps
 `define CYCLE_TIME 10			
-`define END_COUNT 50
+`define END_COUNT 512
 
 
 
@@ -63,7 +63,7 @@ parameter [6-1:0] FUNC_JR  = 6'b001000;
 
 //Other register declaration
 reg [31:0] instruction;
-reg [31:0] register_file[31:0];
+reg [31:0] register_file[256:0];
 reg		[7:0]		mem_file 			[0:127];
 reg [31:0] pc;
 reg [4:0]  rs,rt,rd;
@@ -129,7 +129,7 @@ end
 end
 
 initial  begin
-	$readmemb("CO_P2_test_data3.txt", cpu.IM.Instr_Mem);  //Read instruction from "CO_P2_test_data1.txt"
+	$readmemb("big_test.txt", cpu.IM.Instr_Mem);  //Read instruction from "CO_P2_test_data1.txt"
     handle = $fopen("CO_Lab3_Result.txt");
     $dumpfile("test.vcd");
     $dumpvars(0,cpu);
@@ -258,6 +258,7 @@ initial  begin
 				pc = {{pc[31:28]},{instruction[25:0]},{2'b00}};
 			end
 			default:begin
+                $display("Inst %b\n", instruction);
 				$display("ERROR: invalid op code!!\nfinish simulation");
 				#(`CYCLE_TIME*1);
 				$finish;

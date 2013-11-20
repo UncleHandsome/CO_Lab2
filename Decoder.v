@@ -62,7 +62,7 @@ always @ (*) begin
         OP_RTYPE: countrol <= 13'b1100000_010_1_00;
         OP_LW   : countrol <= 13'b1010010_000_1_00;
         OP_SW   : countrol <= 13'b0010100_000_1_00;
-        OP_BEQ  : countrol <= 13'b1101000_001_1_00;
+        OP_BEQ  : countrol <= 13'b0001000_001_1_00;
         OP_ADDI : countrol <= 13'b1010000_000_1_00;
         OP_JUMP : countrol <= 13'b0000001_000_1_00;
         OP_ORI  : countrol <= 13'b1010000_011_0_00;
