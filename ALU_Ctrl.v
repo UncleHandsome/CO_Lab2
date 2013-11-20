@@ -46,7 +46,7 @@ parameter [3:0] ALU_OR   = 4'b0001;
 parameter [3:0] ALU_ADD  = 4'b0010;
 parameter [3:0] ALU_MUL  = 4'b0011;
 parameter [3:0] ALU_SUB  = 4'b0110;
-parameter [3:0] ALU_BAN  = 4'b0111;
+parameter [3:0] ALU_SLT  = 4'b0111;
 parameter [3:0] ALU_SLL  = 4'b1000;
 parameter [3:0] ALU_SLLV = 4'b1010;
 parameter [3:0] ALU_SRL  = 4'b1001;
@@ -63,7 +63,7 @@ always @ (*) begin
             FUNC_SUB : ALUCtrl_o <= ALU_SUB;
             FUNC_AND : ALUCtrl_o <= ALU_AND;
             FUNC_OR  : ALUCtrl_o <= ALU_OR;
-            FUNC_SLT : ALUCtrl_o <= ALU_SUB;
+            FUNC_SLT : ALUCtrl_o <= ALU_SLT;
             FUNC_SLL : ALUCtrl_o <= ALU_SLL;
             FUNC_SLLV: ALUCtrl_o <= ALU_SLLV;
             FUNC_SRL : ALUCtrl_o <= ALU_SRL;

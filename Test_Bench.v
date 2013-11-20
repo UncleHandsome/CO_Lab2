@@ -129,7 +129,7 @@ end
 end
 
 initial  begin
-	$readmemb("CO_LAB3_test_data3.txt", cpu.IM.Instr_Mem);  //Read instruction from "CO_P2_test_data1.txt"
+	$readmemb("CO_P2_test_data3.txt", cpu.IM.Instr_Mem);  //Read instruction from "CO_P2_test_data1.txt"
     handle = $fopen("CO_Lab3_Result.txt");
     $dumpfile("test.vcd");
     $dumpvars(0,cpu);
